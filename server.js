@@ -14,7 +14,6 @@ app.use(bodyParser());
 app.set('view engine' ,'ejs');
 
 app.use(express.static('./public'));
-
 app.set('views', [path.join(__dirname, 'views'),
                       path.join(__dirname, 'views/pages/'), 
                       path.join(__dirname, 'views/pages/searches/')]);
@@ -23,8 +22,47 @@ app.set('views', [path.join(__dirname, 'views'),
 app.get('/hello',(req,res) =>{
 res.render('index');
 });
+app.get(('/searches/new'),(req,res)=>{
+    res.render('new');
+});
 
 
+app.post(('/searches'),(req,res) =>{
+    // let title = req.query.q;
+    console.log('Get Request->  ',req.body);
+    if(req.body.select === 'title'){
+    let title = req.body.q;
+    let url = `https://www.googleapis.com/books/v1/volumes?q=${title}`;
+    superagent.get(url)
+    .then(val =>{
+        let dataBooks = val.body;
+        let array = dataBooks.items.map(val =>{
+           return new Book(val);
+        })
+        res.render('show',{data: array,title: title});
+    });}
+    else if(req.body.select === 'author'){
+        let author = req.body.q;
+        console.log(author);
+    let url = `https://www.googleapis.com/books/v1/volumes?q=${author}`;
+    superagent.get(url)
+    .then(val =>{
+        let dataBooks = val.body;
+        let array = dataBooks.items.map(val =>{
+           return new Book(val);
+        })
+        res.render('show',{data: array,author: author});
+    });
+    }
+});
+
+function Book(data){
+    this.title = data.volumeInfo.title;
+    this.image = data.volumeInfo.imageLinks.thumbnail;
+    this.authors = data.volumeInfo.authors;
+    this.description = data.volumeInfo.description;
+
+}
 
 
 
