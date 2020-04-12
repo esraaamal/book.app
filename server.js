@@ -1,24 +1,34 @@
-`use strict`;
+'use strict';
 
-// Load Environment Variables from the .env file
 require('dotenv').config();
-
-// Application Dependencies
 const express = require('express');
-const cors = require('cors');
 const superagent = require('superagent');
-// const pg= require('pg');
-
-
-
-
-
-const PORT = process.env.PORT || 3000;
-// const client =new pg.Client(process.env.DATABASE_URL);
+const PORT = process.env.PORT;
 const app = express();
-app.use(cors());
+const bodyParser = require('body-parser');
+var path =require('path');
+
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(bodyParser());
+app.set('view engine' ,'ejs');
+
+app.use(express.static('./public'));
+
+app.set('views', [path.join(__dirname, 'views'),
+                      path.join(__dirname, 'views/pages/'), 
+                      path.join(__dirname, 'views/pages/searches/')]);
 
 
-app.listen(PORT, () => {
-    console.log('listening on port', PORT);
+app.get('/hello',(req,res) =>{
+res.render('index');
+});
+
+
+
+
+
+
+app.listen(PORT,()=>{
+console.log(`listen to ${PORT}`);
 });
