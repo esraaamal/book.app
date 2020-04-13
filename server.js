@@ -7,6 +7,10 @@ const PORT = process.env.PORT;
 const app = express();
 const bodyParser = require('body-parser');
 var path =require('path');
+const pg =require('pg');
+const POrt=process.env.PORT ||3030;
+const client=new pg.Client(process.env.DATABASE_URL);
+
 
 app.use(express.json());
 app.use(express.urlencoded({extended:true}));
@@ -76,7 +80,10 @@ res.render('error');
 
 
 
+client.connect()
+.then(()=>{
+    app.listen(PORT,()=>{
+        console.log(`listen to ${PORT}`);
+        });
 
-app.listen(PORT,()=>{
-console.log(`listen to ${PORT}`);
-});
+})
