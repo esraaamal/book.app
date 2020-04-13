@@ -8,5 +8,3 @@ CREATE TABLE myBooks (
     description TEXT
 
 );
-
-    

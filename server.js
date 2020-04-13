@@ -8,7 +8,7 @@ const app = express();
 const bodyParser = require('body-parser');
 var path =require('path');
 const pg =require('pg');
-const POrt=process.env.PORT ||3030;
+const PORT=process.env.PORT ||3030;
 const client=new pg.Client(process.env.DATABASE_URL);
 
 
@@ -20,7 +20,8 @@ app.set('view engine' ,'ejs');
 app.use(express.static('./public'));
 app.set('views', [path.join(__dirname, 'views'),
                       path.join(__dirname, 'views/pages/'), 
-                      path.join(__dirname, 'views/pages/searches/')]);
+                      path.join(__dirname, 'views/pages/searches/'),
+                      path.join(__dirname, 'views/pages/books/')]);
 
 
 app.get('/',(req,res) =>{
@@ -31,40 +32,115 @@ app.get(('/searches/new'),(req,res)=>{
 });
 
 
+// app.post(('/searches'),(req,res) =>{
+//     // let title = req.query.q;
+//     console.log('Get Request->  ',req.body);
+//     if(req.body.select === 'title'){
+//     let title = req.body.q;
+//     let url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${title}`;
+//     superagent.get(url)
+//     .then(val =>{
+//         let dataBooks = val.body;
+//         let array = dataBooks.items.map(val =>{
+//            return new Book(val);
+//         })
+//         res.render('show',{data: array,title: title});
+//     })
+// .catch (error =>{
+//     res.render('error');
+// });
+// }
+
+
+
+
+
+
+
 app.post(('/searches'),(req,res) =>{
-    // let title = req.query.q;
-    console.log('Get Request->  ',req.body);
     if(req.body.select === 'title'){
-    let title = req.body.q;
-    let url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${title}`;
-    superagent.get(url)
-    .then(val =>{
-        let dataBooks = val.body;
-        let array = dataBooks.items.map(val =>{
-           return new Book(val);
+        let title = req.body.q;
+    let SQL = 'SELECT * FROM myBooks WHERE title=$1;';
+    let saveValue=[title];
+    return client.query(SQL,saveValue)
+    .then(results =>{
+        if(results.rows[0]){
+        res.render('show',{taskResults:results.rows[0]});
+    }else {
+
+    if(req.body.select === 'title'){
+        let title = req.body.q;
+        let url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${title}`;
+        superagent.get(url)
+        .then(val =>{
+            let dataBooks = val.body;
+            let array = dataBooks.items.map(val =>{
+               let bookData= new Book(val);
+               let SQL ='INSERT INTO myBooks (title,authors,image,description) VALUES ($1,$2,$3,$4);';
+               let safeValues =[bookData.title,bookData.authors,bookData.image,bookData.description];
+            return client.query(SQL,saveValue)
+            .then(results =>{
+                results.rows[0];
+                res.render('show',{taskResults:results.rows[0]});
+            })
+            
+            })
+            // res.render('show',{data: array,title: title});
         })
-        res.render('show',{data: array,title: title});
-    })
-.catch (error =>{
-    res.render('error');
-});
-}
-    else if(req.body.select === 'author'){
-        let author = req.body.q;
-        console.log(author);
-    let url = `https://www.googleapis.com/books/v1/volumes?q=inauthor:${author}`;
-    superagent.get(url)
-    .then(val =>{
-        let dataBooks = val.body;
-        let array = dataBooks.items.map(val =>{
-           return new Book(val);
-        })
-        res.render('show',{data: array,author: author});
-    })
-    .catch (error =>{
-        res.render('error');
-    });
+    // .catch (error =>{
+    //     res.render('error');
+    // });
     }
+} })
+
+//now we want the author
+
+}
+
+
+
+
+
+
+
+
+
+//     // let title = req.query.q;
+//     console.log('Get Request->  ',req.body);
+//     if(req.body.select === 'title'){
+//     let title = req.body.q;
+//     let url = `https://www.googleapis.com/books/v1/volumes?q=intitle:${title}`;
+//     superagent.get(url)
+//     .then(val =>{
+//         let dataBooks = val.body;
+//         let array = dataBooks.items.map(val =>{
+//            return new Book(val);
+//         })
+//         res.render('show',{data: array,title: title});
+//     })
+// .catch (error =>{
+//     res.render('error');
+// });
+// }
+
+
+
+    // else if(req.body.select === 'author'){
+    //     let author = req.body.q;
+    //     console.log(author);
+    // let url = `https://www.googleapis.com/books/v1/volumes?q=inauthor:${author}`;
+    // superagent.get(url)
+    // .then(val =>{
+    //     let dataBooks = val.body;
+    //     let array = dataBooks.items.map(val =>{
+    //        return new Book(val);
+    //     })
+    //     res.render('show',{data: array,author: author});
+    // })
+    // .catch (error =>{
+    //     res.render('error');
+    // });
+    // }
 });
 
 function Book(data){
@@ -72,6 +148,7 @@ function Book(data){
     this.image = data.volumeInfo.imageLinks.thumbnail || 'https://www.freeiconspng.com/uploads/book-icon--icon-search-engine-6.png';
     this.authors = data.volumeInfo.authors || [];
     this.description = data.volumeInfo.description || 'no description';
+    // this.
 }
 
 app.get('*',(req,res)=>{
