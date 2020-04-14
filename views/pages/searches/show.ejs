@@ -35,16 +35,13 @@
         </div>
     </header>
     <main>
-        <ul>
-            <%console.log(taskResults); %>
-
-        <%taskResults.forEach(val =>{%>
+        <%data.forEach(val =>{%>
             <div class="container">
                 <% if(val.image){%>
                     <img src="<%= val.image%>">
                     <%}%>
                     <h3 class="title"><%= val.title%></h3>
-        <%if(val.authors){%>
+        <%if(val.authors[0]){%>
             <% console.log(val.authors); %>
         <% val.authors.forEach(value =>{ %>
             <li class="auth"><%= value%></li>
@@ -54,9 +51,7 @@
         <li class="desc"><%= val.description%></li>
         <%}%>
     </div>
-    <!-- <a href="/task/<%= task.id%>">hi esraa view the data base</a> -->
         <%}); %>
-    </ul>
         <div class="footer">
             <span class="icon-ello"></span>
             <span class="icon-ello"></span>
