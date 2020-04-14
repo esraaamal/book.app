@@ -34,3 +34,13 @@ button{
     border: none;
     box-sizing: border-box; 
 }
+
+.addBookk{
+    margin-left: 92px;
+}
+
+button:hover{
+    transform: scale(0.9);
+    cursor: pointer;
+
+}

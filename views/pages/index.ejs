@@ -4,14 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>book search</title>
-    <link rel="stylesheet" href="./base.css" type="text/css">
+    <link rel="stylesheet" href="/styles/base.css">
+    <link rel="stylesheet" href="/styles/layout.css">
+    <link rel="stylesheet" href="/styles/module.css">
     
 </head>
 <body>
     <header><h1>Hello world</h1></header>
     <main>
+      
 
-        
+        <!-- <% %> -->
+        <%taskResults.forEach(val =>{%>
+            <div class="container">
+                <% if(val.image){%>
+                    <img src="<%= val.image%>">
+                    <%}%>
+                    <h3 class="title"><%= val.title%></h3>
+        <%if(val.authors[0]){%>
+            <% console.log(val.authors); %>
+        <% val.authors.forEach(value =>{ %>
+            <li class="auth"><%= value%></li>
+            <% }); %>
+            <%}%>
+            <% if(val.description){%>
+        <li class="desc"><%= val.description%></li>
+        <%}%>
+      <button> <a href="/detail/<%val.id %>">View details</a></button>  <% %>
+    </div>
+        <%}); %>
     </main>
     <footer></footer>
 </body>
