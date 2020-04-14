@@ -8,13 +8,15 @@
     <link rel="stylesheet" href="/styles/base.css">
     <link rel="stylesheet" href="/styles/layout.css">
     <link rel="stylesheet" href="/styles/module.css">
-    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.js"></script>
 
 </head>
 <body>
+  
     <header>
         <h1>Best Books!</h1>
-        <div class="nav">
+        <div id="svghum">
+        <button class="nav">
             <svg aria-hidden="true" focusable="false" data-prefix="fad" data-icon="alien-monster" role="img"
         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
         class="svg-inline--fa fa-alien-monster fa-w-18 fa-9x">
@@ -30,6 +32,15 @@
             class="fa-secondary"></path>
         </g>
         </svg>
+      </button>
+    </div>
+        <div id="myForm">
+          <form  action="/home" method="get">
+            <button id="goHome" type="submit">Go Home</button>
+          </form>
+          <form action="/listBook" method="get">
+          <button  type="submit">Book List</button>
+        </form>
         </div>
     </header>
     <main>
@@ -40,7 +51,6 @@
        <label for="author">author<input type="radio" value="author" name="select"></label>
        <button>Search The Google Books API</button>
         </form>
-        <button class="addBookk">Add New book</button>
 
         <div class="footer1">
             
@@ -48,5 +58,7 @@
     
     </main>
     
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.js"></script>
+<script src="/app.js"></script>
 </body>
 </html>
