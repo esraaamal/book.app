@@ -26,29 +26,33 @@ path.join(__dirname, 'views/pages/books/')]);
 /////////////////////////////////////////////////////////
 
 
-
-app.get('/', getSqlData);
-app.get('/searches/new', newFiles);
-app.post('/searches', getDataApi);
-app.get('/books/:id', selecTwo);
-app.post('/books',inserApitData);
-
-
-
-
-app.get('/home', (req, res) => {
-
+app.get('/new', (req, res) => {
     res.render('new');
 })
 
-app.get('/new', (req, res) => {
-    res.render('show');
-})
+
+/////////////////////////////////////
+app.get('/', getSqlData);
+app.get('/searches/new', newFiles);//call the form
+app.post('/books',inserApitData);//insert the data in table myBooks
+app.post('/searches', getDataApi);
+app.get('/tasks/:id-task', viewDetailes);
+app.post('/add',addData);
+   
 
 
 function newFiles(req, res) {
     res.render('new');
 }
+
+function addData(req, res){
+
+    res.render('add',{data:req.body});
+
+   }
+
+
+
 
 function getSqlData(req, res) {
     let SQL = 'SELECT * FROM myBooks ;';
@@ -59,25 +63,17 @@ function getSqlData(req, res) {
 }
 
 
-function selecTwo(req, res) {
+function viewDetailes(req, res) {
     let SQL = 'SELECT * FROM myBooks WHERE id=$1;';
-    let safeValue = [req.params.id];
+    let safeValue = [req.params.id-task];
     return client.query(SQL, safeValue)
         .then(results => {
-            res.render('details', { task: results.rows[0] })
+            res.render('details', { data: results.rows[0] })
         })
 }
 
 
-function saveBook(req, res) {
-    let parCode = req.params.id - add;
-    let SQL = 'SELECT * FROM addBooks WHERE id=$1;';
-    let safeValue = [parCode];
-    return client.query(SQL, safeValue)
-        .then(results => {
-            res.render('add', { data: results.rows })
-        });
-}
+
 
 
 
@@ -122,17 +118,6 @@ function getDataApi(req, res) {
 }
 
 
-// function  getDataBase(newBook,reg, res) {
-
-//     let SQL = 'INSERT INTO myBooks (title,authors,image,description ,bookshelf,ISBN) VALUES ($1,$2,$3,$4,$5,$6);';
-//     let safeValues = [newBook.title, newBook.authors, newBook.image, newBook.description,newBook.bookshelf,newBook.ISBN];
-//     return client.query(SQL, safeValues)
-//     .then(() => {
-//         res.redirect('/');
-//     })
-
-
-//     }
 
 function inserApitData(req,res){
     let {image ,title,authors, description,bookshelf,ISBN}=req.body;

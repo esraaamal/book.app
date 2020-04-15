@@ -1,73 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+
+  <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>search result</title>
+    <title>search</title>
     <link rel="stylesheet" href="/styles/reset.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icomoon@1.0.0/fonts/icomoon.eot">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icomoon@1.0.0/fonts/icomoon.svg">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icomoon@1.0.0/fonts/icomoon.ttf">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/icomoon@1.0.0/fonts/icomoon.woff">
     <link rel="stylesheet" href="/styles/base.css">
     <link rel="stylesheet" href="/styles/layout.css">
     <link rel="stylesheet" href="/styles/module.css">
+
+
 </head>
 <body>
-    <header>
-        <h1>Best Books!</h1>
-        <div id="svghum">
-        <button class="nav">
-            <svg aria-hidden="true" focusable="false" data-prefix="fad" data-icon="alien-monster" role="img"
-        xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
-        class="svg-inline--fa fa-alien-monster fa-w-18 fa-9x">
-        <g class="fa-group">
-          <path fill="currentColor"
-            d="m464.883 64.267h-417.766c-25.98 0-47.117 21.136-47.117 47.149 0 25.98 21.137 47.117 47.117 47.117h417.766c25.98 0 47.117-21.137 47.117-47.117 0-26.013-21.137-47.149-47.117-47.149z"
-            class="fa-secondary"></path>
-          <path fill="currentColor"
-            d="m464.883 208.867h-417.766c-25.98 0-47.117 21.136-47.117 47.149 0 25.98 21.137 47.117 47.117 47.117h417.766c25.98 0 47.117-21.137 47.117-47.117 0-26.013-21.137-47.149-47.117-47.149z"
-            class="fa-primary"></path>
-          <path fill="currentColor"
-            d="m464.883 353.467h-417.766c-25.98 0-47.117 21.137-47.117 47.149 0 25.98 21.137 47.117 47.117 47.117h417.766c25.98 0 47.117-21.137 47.117-47.117 0-26.012-21.137-47.149-47.117-47.149z"
-            class="fa-secondary"></path>
-        </g>
-        </svg>
-      </button>
+  <%- include('./layout/header.ejs') %>
+  
+
+  <main>
+
+    <% data.forEach((val)=> { %>
+    <div class="container">
+
+      <img class="bookimage" src="<%=val.image %>"/><br>
+      <p class="booktitle"><%=val.title %></p>
+      <p class="bookauthor"><%=val.authors %></p>
+      <p class="bookdescp"> <%= val.description %></p>
+
+      <form class="select" action="/add" method="post">
+        <input type="hidden" name="image" value="<%=val.image %>">
+        <input type="hidden" name="title" value="<%=val.title %>">
+        <input type="hidden" name="author" value="<%=val.author %>">
+        <input type="hidden" name="description" value="<%= val.description %>">
+        <button type="submit">Add Book</a></button>
+      </form>
     </div>
-        <div id="myForm">
-          <form  action="/home" method="get">
-            <button id="goHome" type="submit">Go Home</button>
-          </form>
-          <form action="/listBook" method="get">
-          <button  type="submit">Book List</button>
-        </form>
-        </div>
-    </header>
-    <main>
-        <%data.forEach(val =>{%>
-            <form action="/books" method="post">
+    <%})%>
+    
 
-            <div class="container">
-                <% if(val.image){%>
-                    <img src="<%= val.image%>">
-                    <%}%>
-                    <h3 class="title"><%= val.title%></h3>
-        <%if(val.authors[0]){%>
-            <% console.log(val.authors); %>
-        <% val.authors.forEach(value =>{ %>
-            <li class="auth"><%= value%></li>
-            <% }); %>
-            <%}%>
-            <% if(val.description){%>
-        <li class="desc"><%= val.description%></li>
-        <button><a href="/books/<%= val.id%>">Add Book</a></button> 
-
-        <%}%>
-    </div>
-
-</form>
-        <%}); %>
+        
    
 
 
