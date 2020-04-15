@@ -104,3 +104,79 @@ li {
 .desc {
     margin-bottom: 10%;
 }
+/* fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff
+fffffffffffffffffffffffffffffffffffffffffffffff */
+
+  
+  
+  .box {
+    margin-left: 30%;
+    margin-top: 1%;
+    position: absolute;
+    padding: 3px;
+    border: 2px solid #fff;
+    border-radius: 20px/50px;
+    background-clip: padding-box;
+    text-align: center;
+    z-index: 9999;
+  }
+  
+  .button {
+    font-size: 1em;
+    padding: 1px;
+    color: #fff;
+    border-radius: 20px/50px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease-out;
+  }
+ 
+  
+  .overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.7);
+    transition: opacity 500ms;
+    visibility: hidden;
+    opacity: 0;
+  }
+  .overlay:target {
+    visibility: visible;
+    opacity: 1;
+    z-index: 999999;
+  }
+  
+  .popup {
+    margin: 100px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 5px;
+    width: 30%;
+    height: 40%;
+    position: relative;
+    /* transition: all 5s ease-in-out; */
+  }
+  
+ 
+  .popup .close {
+    position: absolute;
+    top: 7px;
+    right: 20px;
+    transition: all 200ms;
+    font-size: 30px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+  }
+  .popup .close:hover {
+    color: chocolate;
+  }
+  .popup .content {
+    max-height: 30%;
+    overflow: auto;
+  }
+  
+  

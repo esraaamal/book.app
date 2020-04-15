@@ -54,7 +54,7 @@ button:hover{
     margin-top:46px;
     z-index: 999;
     align-items: stretch;
-    margin-left: 325px;
+    margin-left: 10px;
    
 
 }
@@ -62,9 +62,9 @@ button:hover{
     background-color: black;
     color: white;
     font-weight: 700;
-    opacity: .6;
+    /* opacity: .6; */
     background-color:chocolate;
-    width: 100px;
+    width: 350px;
 
 }
 
