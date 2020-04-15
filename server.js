@@ -30,18 +30,18 @@ path.join(__dirname, 'views/pages/books/')]);
 app.get('/', getSqlData);
 app.get('/searches/new', newFiles);
 app.post('/searches', getDataApi);
-app.get('/books/:id',selecTwo);
-app.post('/books/:id-add',saveBook);
+app.get('/books/:id', selecTwo);
+app.post('/books/:id-add', saveBook);
 
 
 
 
-app.get('/home' ,(req,res)=>{
+app.get('/home', (req, res) => {
 
     res.render('new');
 })
 
-app.get('/listBook',(req,res)=>{
+app.get('/listBook', (req, res) => {
     res.render('show');
 })
 
@@ -60,7 +60,7 @@ function getSqlData(req, res) {
 
 
 function selecTwo(req, res) {
-    let parCode = req.params.val-id;
+    let parCode = req.params.val - id;
     let SQL = 'SELECT * FROM myBooks WHERE id=$1;';
     let safeValue = [parCode];
     return client.query(SQL, safeValue)
@@ -70,16 +70,14 @@ function selecTwo(req, res) {
 }
 
 
-function saveBook(req,res){
-    let parCode = req.params.id-add;
+function saveBook(req, res) {
+    let parCode = req.params.id - add;
     let SQL = 'SELECT * FROM addBooks WHERE id=$1;';
-let safeValue =[parCode];
-return client.query(SQL ,safeValue)
-.then(results =>{
-    res.render('add', {data:results.rows})
-});
-
-
+    let safeValue = [parCode];
+    return client.query(SQL, safeValue)
+        .then(results => {
+            res.render('add', { data: results.rows })
+        });
 }
 
 
@@ -87,8 +85,8 @@ return client.query(SQL ,safeValue)
 
 
 
-function getDataApi(req,res) {
-//   let array=[];
+function getDataApi(req, res) {
+    //   let array=[];
     console.log('Get Request->  ', req.body);
     if (req.body.select === 'title') {
         let title = req.body.q;
@@ -96,12 +94,18 @@ function getDataApi(req,res) {
         return superagent.get(url)
             .then(val => {
                 let dataBooks = val.body;
-               let array= dataBooks.items.map(val => {
-                    let newBook = new Book(val);
-                    getDataBase(newBook, res, req);
-                    array.push(newBook);
-                    // return  newBook;
-                    return new Book(val);
+                let array = dataBooks.items.map(val => {
+                    const newBook = new Book(val);
+                    let SQL = 'INSERT INTO myBooks (title,authors,image,description ,bookshelf,ISBN) VALUES ($1,$2,$3,$4,$5,$6);';
+                    let safeValues = [newBook.title, newBook.authors, newBook.image, newBook.description, newBook.bookshelf, newBook.ISBN];
+                    return client.query(SQL, safeValues)
+                        .then(() => {
+                            res.redirect('/');
+                        })
+                    // getDataBase(newBook, res, req);
+                    // array.push(newBook);
+                    // // return  newBook;
+                    // return new Book(val);
 
 
                 })
@@ -118,12 +122,12 @@ function getDataApi(req,res) {
         superagent.get(url)
             .then(val => {
                 let dataBooks = val.body;
-              let array= dataBooks.items.map(val => {
-                  let newBook = new Book(val);
-                // return new Book(val);
+                let array = dataBooks.items.map(val => {
+                    let newBook = new Book(val);
+                    // return new Book(val);
                     getDataBase(newBook, res, req);
                     array.push(newBook);
-                    return  newBook;
+                    return newBook;
 
 
                 })
@@ -136,18 +140,18 @@ function getDataApi(req,res) {
 }
 
 
-function  getDataBase(newBook,reg, res) {
+// function  getDataBase(newBook,reg, res) {
 
-    let SQL = 'INSERT INTO myBooks (title,authors,image,description ,bookshelf,ISBN) VALUES ($1,$2,$3,$4,$5,$6);';
-    let safeValues = [newBook.title, newBook.authors, newBook.image, newBook.description,newBook.bookshelf,newBook.ISBN];
-    return client.query(SQL, safeValues)
-    .then(() => {
-        res.redirect('/');
-    })
+//     let SQL = 'INSERT INTO myBooks (title,authors,image,description ,bookshelf,ISBN) VALUES ($1,$2,$3,$4,$5,$6);';
+//     let safeValues = [newBook.title, newBook.authors, newBook.image, newBook.description,newBook.bookshelf,newBook.ISBN];
+//     return client.query(SQL, safeValues)
+//     .then(() => {
+//         res.redirect('/');
+//     })
 
 
-    }
-  
+//     }
+
 
 
 
@@ -177,4 +181,3 @@ client.connect()
     })
 
 
-    
