@@ -26,29 +26,33 @@ path.join(__dirname, 'views/pages/books/')]);
 /////////////////////////////////////////////////////////
 
 
-
-app.get('/', getSqlData);
-app.get('/searches/new', newFiles);
-app.post('/searches', getDataApi);
-app.get('/books/:id',selecTwo);
-app.post('/books/:id-add',saveBook);
-
-
-
-
-app.get('/home' ,(req,res)=>{
-
+app.get('/new', (req, res) => {
     res.render('new');
 })
 
-app.get('/listBook',(req,res)=>{
-    res.render('show');
-})
+
+/////////////////////////////////////
+app.get('/', getSqlData);
+app.get('/searches/new', newFiles);//call the form
+app.post('/books',inserApitData);//insert the data in table myBooks
+app.post('/searches', getDataApi);
+app.get('/tasks/:id-task', viewDetailes);
+app.post('/add',addData);
+   
 
 
 function newFiles(req, res) {
     res.render('new');
 }
+
+function addData(req, res){
+
+    res.render('add',{data:req.body});
+
+   }
+
+
+
 
 function getSqlData(req, res) {
     let SQL = 'SELECT * FROM myBooks ;';
@@ -59,36 +63,25 @@ function getSqlData(req, res) {
 }
 
 
-function selecTwo(req, res) {
-    let parCode = req.params.val-id;
+function viewDetailes(req, res) {
     let SQL = 'SELECT * FROM myBooks WHERE id=$1;';
-    let safeValue = [parCode];
+    let safeValue = [req.params.id-task];
     return client.query(SQL, safeValue)
         .then(results => {
-            res.render('details', { task: results.rows[0] })
+            res.render('details', { data: results.rows[0] })
         })
 }
 
 
-function saveBook(req,res){
-    let parCode = req.params.id-add;
-    let SQL = 'SELECT * FROM addBooks WHERE id=$1;';
-let safeValue =[parCode];
-return client.query(SQL ,safeValue)
-.then(results =>{
-    res.render('add', {data:results.rows})
-});
-
-
-}
 
 
 
 
 
 
-function getDataApi(req,res) {
-//   let array=[];
+
+function getDataApi(req, res) {
+    //   let array=[];
     console.log('Get Request->  ', req.body);
     if (req.body.select === 'title') {
         let title = req.body.q;
@@ -96,14 +89,8 @@ function getDataApi(req,res) {
         return superagent.get(url)
             .then(val => {
                 let dataBooks = val.body;
-               let array= dataBooks.items.map(val => {
-                    let newBook = new Book(val);
-                    getDataBase(newBook, res, req);
-                    array.push(newBook);
-                    // return  newBook;
-                    return new Book(val);
-
-
+                let array = dataBooks.items.map(val => {
+                   return new Book(val);
                 })
                 res.render('show', { data: array, title: title });
             })
@@ -118,13 +105,8 @@ function getDataApi(req,res) {
         superagent.get(url)
             .then(val => {
                 let dataBooks = val.body;
-              let array= dataBooks.items.map(val => {
-                  let newBook = new Book(val);
-                // return new Book(val);
-                    getDataBase(newBook, res, req);
-                    array.push(newBook);
-                    return  newBook;
-
+                let array = dataBooks.items.map(val => {
+                    return new Book(val);
 
                 })
                 res.render('show', { data: array, author: author });
@@ -136,18 +118,19 @@ function getDataApi(req,res) {
 }
 
 
-function  getDataBase(newBook,reg, res) {
 
+function inserApitData(req,res){
+    let {image ,title,authors, description,bookshelf,ISBN}=req.body;
     let SQL = 'INSERT INTO myBooks (title,authors,image,description ,bookshelf,ISBN) VALUES ($1,$2,$3,$4,$5,$6);';
-    let safeValues = [newBook.title, newBook.authors, newBook.image, newBook.description,newBook.bookshelf,newBook.ISBN];
-    return client.query(SQL, safeValues)
-    .then(() => {
-        res.redirect('/');
-    })
+    let safeValues = [title, authors, image, description,bookshelf,ISBN];
+return client.query(SQL,safeValues)
+.then(()=>{
+    res.redirect('/')
+})
+
+}
 
 
-    }
-  
 
 
 
@@ -177,4 +160,3 @@ client.connect()
     })
 
 
-    
