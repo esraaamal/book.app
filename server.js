@@ -31,7 +31,7 @@ app.get('/', getSqlData);
 app.get('/searches/new', newFiles);
 app.post('/searches', getDataApi);
 app.get('/books/:id', selecTwo);
-app.post('/books/:id-add', saveBook);
+app.post('/books',inserApitData);
 
 
 
@@ -41,7 +41,7 @@ app.get('/home', (req, res) => {
     res.render('new');
 })
 
-app.get('/listBook', (req, res) => {
+app.get('/new', (req, res) => {
     res.render('show');
 })
 
@@ -60,9 +60,8 @@ function getSqlData(req, res) {
 
 
 function selecTwo(req, res) {
-    let parCode = req.params.val - id;
     let SQL = 'SELECT * FROM myBooks WHERE id=$1;';
-    let safeValue = [parCode];
+    let safeValue = [req.params.id];
     return client.query(SQL, safeValue)
         .then(results => {
             res.render('details', { task: results.rows[0] })
@@ -95,19 +94,7 @@ function getDataApi(req, res) {
             .then(val => {
                 let dataBooks = val.body;
                 let array = dataBooks.items.map(val => {
-                    const newBook = new Book(val);
-                    let SQL = 'INSERT INTO myBooks (title,authors,image,description ,bookshelf,ISBN) VALUES ($1,$2,$3,$4,$5,$6);';
-                    let safeValues = [newBook.title, newBook.authors, newBook.image, newBook.description, newBook.bookshelf, newBook.ISBN];
-                    return client.query(SQL, safeValues)
-                        .then(() => {
-                            res.redirect('/');
-                        })
-                    // getDataBase(newBook, res, req);
-                    // array.push(newBook);
-                    // // return  newBook;
-                    // return new Book(val);
-
-
+                   return new Book(val);
                 })
                 res.render('show', { data: array, title: title });
             })
@@ -123,12 +110,7 @@ function getDataApi(req, res) {
             .then(val => {
                 let dataBooks = val.body;
                 let array = dataBooks.items.map(val => {
-                    let newBook = new Book(val);
-                    // return new Book(val);
-                    getDataBase(newBook, res, req);
-                    array.push(newBook);
-                    return newBook;
-
+                    return new Book(val);
 
                 })
                 res.render('show', { data: array, author: author });
@@ -151,6 +133,18 @@ function getDataApi(req, res) {
 
 
 //     }
+
+function inserApitData(req,res){
+    let {image ,title,authors, description,bookshelf,ISBN}=req.body;
+    let SQL = 'INSERT INTO myBooks (title,authors,image,description ,bookshelf,ISBN) VALUES ($1,$2,$3,$4,$5,$6);';
+    let safeValues = [title, authors, image, description,bookshelf,ISBN];
+return client.query(SQL,safeValues)
+.then(()=>{
+    res.redirect('/')
+})
+
+}
+
 
 
 
