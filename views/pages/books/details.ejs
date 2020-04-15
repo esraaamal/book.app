@@ -6,6 +6,18 @@
     <title>Document</title>
 </head>
 <body>
-    
+    <section>
+    <ul>
+    <%  task.forEach(val =>{ %>
+        <li><%= task.image%></li>
+        <li><%= task.title %></li>
+        <li><%= task.authors%></li>
+        <li><%= task.description %></li>
+        <li><%= task.ISBN%></li>
+        <li><%= task.bookshelf%></li>
+
+    <% })%>
+</ul>
+</section>
 </body>
 </html>

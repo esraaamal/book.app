@@ -16,7 +16,8 @@
 <body>
     <header>
         <h1>Best Books!</h1>
-        <div class="nav">
+        <div id="svghum">
+        <button class="nav">
             <svg aria-hidden="true" focusable="false" data-prefix="fad" data-icon="alien-monster" role="img"
         xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"
         class="svg-inline--fa fa-alien-monster fa-w-18 fa-9x">
@@ -32,10 +33,21 @@
             class="fa-secondary"></path>
         </g>
         </svg>
+      </button>
+    </div>
+        <div id="myForm">
+          <form  action="/home" method="get">
+            <button id="goHome" type="submit">Go Home</button>
+          </form>
+          <form action="/listBook" method="get">
+          <button  type="submit">Book List</button>
+        </form>
         </div>
     </header>
     <main>
         <%data.forEach(val =>{%>
+            <form action="/books" method="post">
+
             <div class="container">
                 <% if(val.image){%>
                     <img src="<%= val.image%>">
@@ -49,9 +61,16 @@
             <%}%>
             <% if(val.description){%>
         <li class="desc"><%= val.description%></li>
+        <button><a href="/books/<%= val.id%>">Add Book</a></button> 
+
         <%}%>
     </div>
+
+</form>
         <%}); %>
+   
+
+
         <div class="footer">
             <span class="icon-ello"></span>
             <span class="icon-ello"></span>

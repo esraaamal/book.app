@@ -28,12 +28,22 @@ path.join(__dirname, 'views/pages/books/')]);
 
 
 app.get('/', getSqlData);
-app.get('/searches/new', newFiles)
-app.get('/detail/:val-id', selecTwo);
+app.get('/searches/new', newFiles);
 app.post('/searches', getDataApi);
+app.get('/books/:id',selecTwo);
+app.post('/books/:id-add',saveBook);
 
 
 
+
+app.get('/home' ,(req,res)=>{
+
+    res.render('new');
+})
+
+app.get('/listBook',(req,res)=>{
+    res.render('show');
+})
 
 
 function newFiles(req, res) {
@@ -44,13 +54,13 @@ function getSqlData(req, res) {
     let SQL = 'SELECT * FROM myBooks ;';
     return client.query(SQL)
         .then(results => {
-            res.render('index', { taskResults: results.rows });
+            res.render('index', { data: results.rows });
         })
 }
 
 
 function selecTwo(req, res) {
-    let parCode = req.params.val - id;
+    let parCode = req.params.val-id;
     let SQL = 'SELECT * FROM myBooks WHERE id=$1;';
     let safeValue = [parCode];
     return client.query(SQL, safeValue)
@@ -60,7 +70,17 @@ function selecTwo(req, res) {
 }
 
 
+function saveBook(req,res){
+    let parCode = req.params.id-add;
+    let SQL = 'SELECT * FROM addBooks WHERE id=$1;';
+let safeValue =[parCode];
+return client.query(SQL ,safeValue)
+.then(results =>{
+    res.render('add', {data:results.rows})
+});
 
+
+}
 
 
 
@@ -68,7 +88,7 @@ function selecTwo(req, res) {
 
 
 function getDataApi(req,res) {
-  let newArr=[];
+//   let array=[];
     console.log('Get Request->  ', req.body);
     if (req.body.select === 'title') {
         let title = req.body.q;
@@ -76,11 +96,13 @@ function getDataApi(req,res) {
         return superagent.get(url)
             .then(val => {
                 let dataBooks = val.body;
-                let array = dataBooks.items.map(val => {
+               let array= dataBooks.items.map(val => {
                     let newBook = new Book(val);
                     getDataBase(newBook, res, req);
-                    newArr.push(newBook);
-                    return  newArr;
+                    array.push(newBook);
+                    // return  newBook;
+                    return new Book(val);
+
 
                 })
                 res.render('show', { data: array, title: title });
@@ -96,12 +118,12 @@ function getDataApi(req,res) {
         superagent.get(url)
             .then(val => {
                 let dataBooks = val.body;
-                let array = dataBooks.items.map(val => {
-                    let newBook = new Book(val);
-
-                    newArr.push(newBook);
+              let array= dataBooks.items.map(val => {
+                  let newBook = new Book(val);
+                // return new Book(val);
                     getDataBase(newBook, res, req);
-                    return  newArr;
+                    array.push(newBook);
+                    return  newBook;
 
 
                 })
@@ -114,18 +136,18 @@ function getDataApi(req,res) {
 }
 
 
-function  getDataBase(newBook, req, res) {
+function  getDataBase(newBook,reg, res) {
 
-    let SQL = 'INSERT INTO myBooks (title,authors,image,description) VALUES ($1,$2,$3,$4);';
-    let safeValues = [newBook.title, newBook.authors, newBook.image, newBook.description];
-    return client.query(SQL, saveValue)
-        .then(results => {
-           res.redirect('/')
-        });
+    let SQL = 'INSERT INTO myBooks (title,authors,image,description ,bookshelf,ISBN) VALUES ($1,$2,$3,$4,$5,$6);';
+    let safeValues = [newBook.title, newBook.authors, newBook.image, newBook.description,newBook.bookshelf,newBook.ISBN];
+    return client.query(SQL, safeValues)
+    .then(() => {
+        res.redirect('/');
+    })
 
 
     }
-
+  
 
 
 
@@ -137,7 +159,7 @@ function Book(data) {
     this.authors = data.volumeInfo.authors || [];
     this.description = data.volumeInfo.description || 'no description';
     this.bookshelf = data.volumeInfo.categories || [];
-    this.this.ISBN = data.volumeInfo.industryIdentifiers[0].type || [];
+    this.ISBN = data.volumeInfo.industryIdentifiers[0].type || [];
 }
 
 app.get('*', (req, res) => {
@@ -154,3 +176,5 @@ client.connect()
 
     })
 
+
+    
