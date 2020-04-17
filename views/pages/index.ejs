@@ -9,9 +9,9 @@
     <main>
         <p> count:<%= data.length %></p>
         <%data.forEach(val =>{%>
-        <!-- <form action="/books" method="post"> -->
-        <form>
-            <div class="container">
+        <form action="/book/<%= val.id%>" method="get">
+
+         <div class="container">
 
                 <% if(val.image){%>
                 <img src="<%= val.image%>">
@@ -21,8 +21,8 @@
                 <% if(val.description){%>
                 <li class="desc"><%= val.description%></li>
                 <%}%>
-      <button><a href="/tasks/<%= val.id%>">View details</a></button>
-
+      <button type="submit">View details</button>
+      <!-- <a href="/books/<%= val.id%>"></a> -->
 </div>
 
 </form>

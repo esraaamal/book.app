@@ -4,18 +4,32 @@
 <body>
     <%- include('./layout/header.ejs') %>
 
-    <section>
-    <ul>
+   <main>
     
-        <li><%= data.image%></li>
-        <li>Title:<%= data.title %></li>
-        <li>Authors<%= data.authors%></li>
-        <li>Descrption:<%= data.description %></li>
-        <li>ISBN:<%= data.ISBN%></li>
-        <li>bookshelf:<%= data.bookshelf%></li>
+    <h4><img class="img1" src="<%= data.image %>"></h4>
+    <li>Title: <%= data.title %></li>
+        <li>Authors: <%= data.authors %></li>
+        <li>Descrption: <%= data.description %></li>
+        <!-- <li>ISBN:<%= data.ISBN%></li>
+        <li>bookshelf:<%= data.bookshelf%></li> -->
 
-  
-</ul>
-</section>
+        <!-- ////////////////////////// -->
+        <button id='update_btn'>Update Details</button>
+        <section id='update_form'>
+            <!-- <h2>Update book</h2> -->
+            <form action="/update/<%=data.id%>?_method=put" method="post">
+                <input type="text"  name="image"  value="<%= data.image %>" >
+                <input type="text" name="title" value="<%= data.title %>">
+                <input type="text" name="authors" value="<%= data.authors %>">
+                <textarea name="description" cols="30" rows="10"><%= data.description %></textarea>
+                <button id="up-btn" type='submit'> Update </button>
+            </form>
+        </section>
+        <form action="/delete/<%=data.id%>?_method=delete" method="post">
+            <button id="delete-btn" type="submit">Delete</button>
+        </form>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.0/jquery.slim.min.js"></script>
+    <script src="./js/app.js"></script>
 </body>
 </html>
