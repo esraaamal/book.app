@@ -1,12 +1,6 @@
-
-`use strict`;
-$( document ).ready(function(){
-
-$('#myForm').hide();
-$('.nav').on('click' ,function(){
-    $('#myForm').toggle();
+$(document).ready(function(){
+    $('#update_form').hide();
+    $('#update_btn').on('click', function(){
+        $('#update_form').toggle();
+    })
 })
-
-
-
-});

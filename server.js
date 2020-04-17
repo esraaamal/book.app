@@ -5,6 +5,7 @@ const express = require('express');
 const superagent = require('superagent');
 const PORT = process.env.PORT || 3030;
 const app = express();
+const methodOverride = require('method-override');
 const bodyParser = require('body-parser');
 var path = require('path');
 const pg = require('pg');
@@ -14,6 +15,7 @@ const client = new pg.Client(process.env.DATABASE_URL);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride('_method'));
 app.use(bodyParser());
 app.set('view engine', 'ejs');
 
@@ -36,9 +38,35 @@ app.get('/', getSqlData);
 app.get('/searches/new', newFiles);//call the form
 app.post('/books',inserApitData);//insert the data in table myBooks
 app.post('/searches', getDataApi);
-app.get('/books/:id-task', viewDetailes);
+app.get('/book/:task_id', viewDetailes);
 app.post('/add',addData);
-   
+app.put('/update/:task_id' ,updatetask)
+app.delete('/delete/:task_id', deleteBook);
+
+
+
+function deleteBook(req ,res){
+    let SQL = 'DELETE FROM myBooks WHERE id=$1';
+    let value = [req.params.task_id];
+    client.query(SQL, value)
+    .then(res.redirect('/'))
+
+}
+
+
+
+function updatetask(req,res){
+    let { title, image,authors ,description} = req.body;
+    let SQL = 'UPDATE myBooks SET title=$1,image=$2,authors=$3,description=$4 WHERE id=$5;';
+    let safeValues = [title, image,authors ,description, req.params.task_id];
+    client.query(SQL, safeValues)
+    .then(res.redirect(`/book/${req.params.task_id}`))
+}
+
+
+
+
+
 
 
 function newFiles(req, res) {
@@ -65,13 +93,12 @@ function getSqlData(req, res) {
 
 function viewDetailes(req, res) {
     let SQL = 'SELECT * FROM myBooks WHERE id=$1;';
-    let safeValue = [req.params.id-task];
+    let safeValue = [req.params.task_id];
     return client.query(SQL, safeValue)
         .then(results => {
             res.render('details', { data: results.rows[0] });
         });
-        console.log(data);
-
+        
 }
 
 
