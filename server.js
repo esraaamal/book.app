@@ -36,7 +36,7 @@ app.get('/', getSqlData);
 app.get('/searches/new', newFiles);//call the form
 app.post('/books',inserApitData);//insert the data in table myBooks
 app.post('/searches', getDataApi);
-app.get('/tasks/:id-task', viewDetailes);
+app.get('/books/:id-task', viewDetailes);
 app.post('/add',addData);
    
 
@@ -68,8 +68,10 @@ function viewDetailes(req, res) {
     let safeValue = [req.params.id-task];
     return client.query(SQL, safeValue)
         .then(results => {
-            res.render('details', { data: results.rows[0] })
-        })
+            res.render('details', { data: results.rows[0] });
+        });
+        console.log(data);
+
 }
 
 
